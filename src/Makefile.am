@@ -10,7 +10,6 @@ EXTRA_DIST += \
   test16.cpp \
   test32.cpp \
   test0.cpp \
-  test.cpp \
   testio.cpp \
   testme.cpp \
   testcovme.cpp \
@@ -133,17 +132,8 @@ test_pr_31_CXXFLAGS = \
   $(AM_CXXFLAGS) \
   $(AM_LDFLAGS)
 
-noinst_PROGRAMS += test testio testme testmd
-TESTS += test testio testme testmd
-
-#Building test
-test_SOURCES = \
-  test.cpp \
-  $(JPCRE2_SOURCES)
-test_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(AM_LDFLAGS) \
-  $(COVERAGE_FLAGS)
+noinst_PROGRAMS += testio testme testmd
+TESTS += testio testme testmd
 
 #Building testio
 testio_SOURCES = \

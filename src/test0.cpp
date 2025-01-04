@@ -57,14 +57,14 @@ int main(){
       .setNumberedSubstringVector(&vec_num8)
       .match();
      
-    std::cout<<"\nFirst match: " + VEC_NUM8[0][0];
+    std::cout<<"\nFirst match: " << VEC_NUM8[0][0];
     
     jpc::Regex rec_2("[\\S]+");
     rm.setRegexObject(&rec_2)
       .setSubject("I am subject")
       .setNumberedSubstringVector(&vec_num8)
       .match();
-    std::cout<<"\nFirst match: " + VEC_NUM8[0][0];
+    std::cout<<"\nFirst match: " << VEC_NUM8[0][0];
     
     std::cout<<"\nReplace: " + 
             rr.setSubject("I am a subject with digits 3343242 4433243 443244")

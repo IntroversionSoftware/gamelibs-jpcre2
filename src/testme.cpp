@@ -34,16 +34,16 @@ String callback0(void*, void*, void*){
 }
 
 String callback1(const jp::NumSub& vec_num, void*, void*){
-    return "("+VEC_NUM[0]+")";
+    return "("+jp::String(VEC_NUM[0])+")";
 }
 
 String callback2(void*, const jp::MapNas& m2, void*){
-    return "("+m2.at("total")+")";
+    return "("+jp::String(m2.at("total"))+")";
 }
 
 String callback3(const jp::NumSub& vec_num,const jp::MapNas& m2, void*){
     jp::MapNas mn2 = m2;
-    return "("+VEC_NUM[0]+"/"+mn2["total"]+")";
+    return "("+jp::String(VEC_NUM[0])+"/"+jp::String(mn2["total"])+")";
 }
 
 String callback4(void*, void*, const jp::MapNtN& m3){
@@ -53,19 +53,19 @@ String callback4(void*, void*, const jp::MapNtN& m3){
 
 String callback5(const jp::NumSub& vec_num, void*, const jp::MapNtN& m3){
     jp::MapNtN mn = m3;
-    return "("+VEC_NUM[0]+"/"+toString(mn["total"])+")";
+    return "("+jp::String(VEC_NUM[0])+"/"+toString(mn["total"])+")";
 }
 
 String callback6(void*, const jp::MapNas& m2, const jp::MapNtn& m3){
     jp::MapNas mn2 = m2;
     jp::MapNtN mn3 = m3;
-    return "("+mn2["total"]+"/"+toString(mn3["total"])+")";
+    return "("+jp::String(mn2["total"])+"/"+toString(mn3["total"])+")";
 }
 
 String callback7(const jp::NumSub& vec_num, const jp::MapNas& m2, const jp::MapNtn& m3){
     jp::MapNas mn2 = m2;
     jp::MapNtN mn3 = m3;
-    return "("+VEC_NUM[0]+"/"+mn2["total"]+"/"+toString(mn3["total"])+"/$0)";
+    return "("+jp::String(VEC_NUM[0])+"/"+jp::String(mn2["total"])+"/"+toString(mn3["total"])+"/$0)";
 }
 
 //The following is an example how you can use start_offset and 
@@ -74,7 +74,7 @@ jpcre2::VecOff const* start_offset, *end_offset;
 size_t offset_count = 0;
 String callback_using_offset(const jp::NumSub& vec_num, void*, void* ){
     size_t count = offset_count++;
-    return "(m[0]: "+ VEC_NUM[0] + "/" + "start_offset: " + toString((*start_offset)[count]) + "/end_offset: " +  toString((*end_offset)[count]);
+    return "(m[0]: "+ jp::String(VEC_NUM[0]) + "/" + "start_offset: " + toString((*start_offset)[count]) + "/end_offset: " +  toString((*end_offset)[count]);
 }
 
 int main(){
@@ -84,7 +84,7 @@ int main(){
     String s3 = "I am a string 879879 fdsjkll ১ ২ ৩ ৪ অ আ ক খ গ ঘ";
     
     
-    rr.setSubject(&s3)
+    rr.setSubject(s3)
       .setPcre2Option(PCRE2_SUBSTITUTE_GLOBAL);
       
     rr.setSubject(s3); //this is allowed too, makes a copy.
@@ -94,7 +94,7 @@ int main(){
     std::cout<<"\n\n### Lambda\n"<<rr.nreplace(
                 jp::MatchEvaluator(
                     [](const jp::NumSub& vec_num, const jp::MapNas& m2, void*){
-                        return "("+VEC_NUM[0]+"/"+m2.at("total")+")";
+                        return "("+jp::String(VEC_NUM[0])+"/"+jp::String(m2.at("total"))+")";
                     }
                 ));
     #endif
@@ -111,7 +111,7 @@ int main(){
     //MatchEvaluator itself has an nreplace() function:
     std::cout<<"\n\n### 7 Calling directly MatchEvaluator::nreplace()\n"
              <<jp::MatchEvaluator(callback7)
-                                 .setSubject(&s3)
+                                 .setSubject(s3)
                                  .setRegexObject(&re) 
                                  .setFindAll()
                                  .nreplace();
@@ -125,7 +125,7 @@ int main(){
     
     jp::MatchEvaluator cme(jp::callback::fill);
     //~ //perform a match to populate all the vectos with match data.
-    cme.setSubject(&s3).setRegexObject(&re).setFindAll().match();
+    cme.setSubject(s3).setRegexObject(&re).setFindAll().match();
     
     std::cout<<"\n\n###### Re-using existing match data of MatchEvaluator:";
     std::cout<<"\n\n### callback0: \n"<<cme.setCallback(callback0).nreplace();      //this one performs the match again (redundant).
@@ -140,7 +140,7 @@ int main(){
     //note the 'false' in the above nreplace() functions, it says 'do not perform a new match' i.e 'use previous match data'
     
     cme.reset();
-    cme.setSubject(&s3).setRegexObject(&re).setFindAll().match();
+    cme.setSubject(s3).setRegexObject(&re).setFindAll().match();
     
     //the following nreplace() performs a new match populating NumSub and MapNas because of callback3:
     std::cout<<"\n\n### callback3: \n"<<cme.setCallback(callback3).nreplace();
@@ -157,7 +157,7 @@ int main(){
     
     //The following (uncomment if you wanna test) will give you assertion failure, because the callback1 only populates NumSub vector,
     //but callback2 requires pre-exisiting (due to the 'false' argument to nreplace()) MapNas data:
-    cme.reset().setSubject(&s3).setRegexObject(&re).setFindAll().setCallback(callback1).nreplace();
+    cme.reset().setSubject(s3).setRegexObject(&re).setFindAll().setCallback(callback1).nreplace();
     //~ std::cout<<"\n\n### callback2: \n"<<cme.setCallback(callback2).nreplace(false); //Assertion failure.
     
 
@@ -210,7 +210,7 @@ int main(){
     cme.setCallback(
         [&](const jp::NumSub& vec_num, void*, void*){
             size_t count = off_count++;
-            return "(m[0]: "+ VEC_NUM[0] + "/" + "start_offset: " + toString((*so)[count]) + "/end_offset: " +  toString((*eo)[count]) + ")";
+            return "(m[0]: "+ jp::String(VEC_NUM[0]) + "/" + "start_offset: " + toString((*so)[count]) + "/end_offset: " +  toString((*eo)[count]) + ")";
         }
     );
     std::cout<<"\n\n### lambda_callback_using_offset: \n"<<cme.replace();
